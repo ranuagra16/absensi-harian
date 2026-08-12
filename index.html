@@ -1,48 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>E-Absensi</title>
   <link rel="icon" href="https://static.vecteezy.com/system/resources/previews/016/716/181/large_2x/website-3d-icon-png.png" type="image/x-icon">
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: sans-serif;
-    }
-    .iframe-container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .loader {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.2rem;
-      color: #666;
-      z-index: 10;
-    }
+    html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family:sans-serif; }
+    .iframe-container { position:relative; width:100%; height:100vh; }
+    iframe { width:100%; height:100%; border:none; }
+    .loader { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+              font-size:1.05rem; color:#666; z-index:10; text-align:center; padding:0 24px; }
+    .nota { position:absolute; left:0; right:0; bottom:0; z-index:20;
+            background:#B3341F; color:#fff; font-size:13px; line-height:1.45;
+            padding:11px 14px calc(11px + env(safe-area-inset-bottom)); display:none; }
+    .nota b { display:block; margin-bottom:2px; }
   </style>
 </head>
 <body>
   <div class="iframe-container">
-    <div class="loader" id="loader">Loading app...</div>
-    <iframe 
-      src="https://script.google.com/macros/s/AKfycbz04WDKww-7lE4cD2ELxQdzRAjcji1EipKCnI8VgQqXYurNNejp1b4_M_raIDqRrlk99Q/exec" 
+    <div class="loader" id="loader">Memuat aplikasi…</div>
+
+    <!--
+      PERUBAHAN SATU-SATUNYA dari berkas lama:
+      atribut allow di bawah ini.
+
+      Tanda bintang berarti izin diteruskan ke SEMUA asal yang dimuat di
+      dalam bingkai ini — perlu, karena script.google.com langsung
+      mengalihkan ke googleusercontent.com. Tanpa bintang, izin hilang
+      begitu terjadi pengalihan.
+
+      Catatan jujur: kalau Apps Script masih menaruh halaman Anda di
+      dalam iframe sandbox miliknya, izin ini tetap terhenti di lapisan
+      itu dan pesan galat yang sama akan muncul lagi. Bila begitu,
+      pakai index.html mandiri.
+    -->
+    <iframe
+      id="bingkai"
+      src="https://script.google.com/macros/s/AKfycbz04WDKww-7lE4cD2ELxQdzRAjcji1EipKCnI8VgQqXYurNNejp1b4_M_raIDqRrlk99Q/exec"
       title="E-Absensi"
-      onload="document.getElementById('loader').style.display='none';"
+      allow="geolocation *; camera *; microphone *; fullscreen *"
       allowfullscreen>
     </iframe>
+
+    <div class="nota" id="nota">
+      <b>Halaman ini bukan HTTPS.</b>
+      GPS dan kamera hanya jalan di alamat https:// atau localhost.
+    </div>
   </div>
+
+<script>
+  document.getElementById('bingkai').addEventListener('load', function(){
+    document.getElementById('loader').style.display = 'none';
+  });
+
+  // GPS & kamera diblokir peramban di halaman http biasa.
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+    document.getElementById('nota').style.display = 'block';
+  }
+
+  // Ketik ujiIzin() di Console untuk melihat apakah izin benar diteruskan.
+  window.ujiIzin = function(){
+    console.log('Protokol :', location.protocol);
+    console.log('Izin di halaman induk:',
+      document.featurePolicy ? document.featurePolicy.allowedFeatures() : 'tidak didukung peramban ini');
+    navigator.geolocation.getCurrentPosition(
+      function(p){ console.log('GPS induk OK:', p.coords.latitude, p.coords.longitude); },
+      function(e){ console.log('GPS induk GAGAL — kode', e.code, e.message); },
+      { enableHighAccuracy:true, timeout:12000 }
+    );
+  };
+</script>
 </body>
 </html>
