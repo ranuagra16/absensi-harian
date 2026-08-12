@@ -1,39 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>E-Absensi</title>
-  <link rel="icon" href="https://cdn.corenexis.com/f/SCGcxhFPLfx.png" type="image/x-icon">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      font-family: sans-serif;
-    }
-    .iframe-container {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .loader {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.2rem;
-      color: #666;
-      z-index: 10;
-    }
-  </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Karyawan - MM PUTRA MOTOR</title>
@@ -51,16 +18,6 @@
         .luxury-input:focus { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); border-color: #0284c7; outline: none;}
     </style>
 </head>
-<body>
-  <div class="iframe-container">
-    <div class="loader" id="loader">Loading app...</div>
-    <iframe 
-      src="https://script.google.com/macros/s/AKfycbyQzS8Kc92dZm49tOjxSfymSkhdF3u6oTj7nojPgnEY2pJFi4WwtIs4iDwSqiuoeRG-SQ/exec" 
-      title="E-Absensi"
-      onload="document.getElementById('loader').style.display='none';"
-      allowfullscreen>
-    </iframe>
-  </div>
 <body class="bg-[#fdfbfb] text-gray-800 font-sans antialiased min-h-screen flex items-center justify-center p-4">
 
     <!-- OVERLAY LOADING -->
