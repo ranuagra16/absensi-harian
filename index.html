@@ -1,75 +1,533 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>E-Absensi</title>
-  <link rel="icon" href="https://kommodo.ai/i/1kAGKAw9fgWqmp5zFCWf" type="image/x-icon">
-  <style>
-    html, body { margin:0; padding:0; height:100%; overflow:hidden; font-family:sans-serif; }
-    .iframe-container { position:relative; width:100%; height:100vh; }
-    iframe { width:100%; height:100%; border:none; }
-    .loader { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-              font-size:1.05rem; color:#666; z-index:10; text-align:center; padding:0 24px; }
-    .nota { position:absolute; left:0; right:0; bottom:0; z-index:20;
-            background:#B3341F; color:#fff; font-size:13px; line-height:1.45;
-            padding:11px 14px calc(11px + env(safe-area-inset-bottom)); display:none; }
-    .nota b { display:block; margin-bottom:2px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0088cc">
+<title>Absensi Masuk — MM Putra Motor</title>
+<link rel="icon" href="https://kommodo.ai/i/yNzzGNEerRKxSTPUueag">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --tinta:#2A3742;      /* warna tulisan biasa */
+  --hitam:#14181C;      /* hitam pekat, khusus nama perusahaan */
+  --kertas:#EAF4FA;     /* latar halaman */
+  --kartu:#FFFFFF;
+  --garis:#CBE0EC;
+  --biru:#0088cc;       /* warna utama, biru muda */
+  --biru-tua:#0071AB;
+  --merah:#C1121F;
+  --lunas:#1B7F4B;
+  --awas:#B3341F;
+  --redup:#6C8290;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--kertas);
+  color:var(--tinta);
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:15px;line-height:1.5;
+  padding:14px 14px calc(28px + env(safe-area-inset-bottom));
+  display:flex;justify-content:center;
+}
+.bingkai{width:100%;max-width:460px}
+
+/* ---------- kop : logo + nama perusahaan ---------- */
+.kop{
+  background:var(--kartu);border:1px solid var(--garis);border-bottom:none;
+  border-radius:14px 14px 0 0;padding:22px 18px 18px;text-align:center;
+}
+.kop img{
+  display:block;margin:0 auto;height:88px;width:auto;max-width:78%;
+  object-fit:contain;
+}
+.merek{
+  font-family:'Archivo Black',sans-serif;
+  font-size:clamp(22px,7.2vw,30px);line-height:1.05;
+  letter-spacing:-.015em;text-transform:uppercase;
+  margin-top:14px;color:var(--hitam);
+}
+.merek .mm{color:var(--merah)}
+.merek .mtr{color:var(--hitam)}
+.slogan{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:13px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--redup);margin-top:7px;
+}
+.kop::after{
+  content:"";display:block;width:52px;height:3px;background:var(--biru);
+  margin:15px auto 0;border-radius:2px;
+}
+
+/* ---------- pita jam ---------- */
+.pita{
+  background:var(--biru);color:#fff;padding:14px 18px 13px;text-align:center;
+}
+.jam{
+  font-family:'IBM Plex Mono',monospace;font-weight:500;
+  font-size:42px;line-height:1;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.tanggal{font-size:13px;color:rgba(255,255,255,.85);margin-top:5px}
+
+/* ---------- kartu langkah ---------- */
+.kartu{
+  background:var(--kartu);border:1px solid var(--garis);border-top:none;
+  padding:18px;
+}
+.kartu:last-of-type{border-radius:0 0 14px 14px}
+.langkah{display:flex;align-items:baseline;gap:9px;margin-bottom:12px}
+.nomor{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;
+  color:var(--biru);letter-spacing:.05em;
+}
+.judul{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:20px;letter-spacing:.03em;text-transform:uppercase;
+}
+label.ket{display:block;font-size:12px;color:var(--redup);margin-bottom:5px}
+
+input[type=text]{
+  width:100%;font-family:inherit;font-size:16px;color:var(--tinta);
+  padding:12px 13px;border:1px solid var(--garis);border-radius:9px;
+  background:#FBFCFD;min-height:48px;
+}
+input:focus{outline:2px solid var(--biru);outline-offset:1px;border-color:var(--biru)}
+.baris{display:flex;gap:8px}
+
+button{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:16px;
+  letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+  border:1px solid var(--biru);background:var(--biru);color:#fff;
+  padding:0 14px;min-height:48px;border-radius:9px;width:100%;
+}
+button.garis{background:transparent;color:var(--biru-tua);border-color:var(--biru)}
+button.utama{background:var(--biru-tua);border-color:var(--biru-tua)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible{outline:3px solid var(--biru);outline-offset:2px}
+
+/* penanda jenis absen tetap */
+.tetap{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  background:var(--biru);color:#fff;border-radius:9px;min-height:48px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;
+  letter-spacing:.1em;text-transform:uppercase;
+}
+.titik{width:9px;height:9px;border-radius:50%;background:#5FD08C}
+
+/* data terkunci */
+.data{
+  font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+  background:#F2F9FD;border:1px dashed var(--garis);border-radius:9px;
+  padding:12px;white-space:pre-wrap;word-break:break-word;color:#31505F;
+  user-select:none;-webkit-user-select:none;
+}
+.gembok{
+  display:flex;align-items:flex-start;gap:6px;font-size:11px;
+  color:var(--redup);margin-top:8px;line-height:1.45;
+}
+.gembok svg{flex:none;margin-top:2px}
+
+video,#pratayang{
+  width:100%;border-radius:11px;background:#0B141C;display:block;
+  aspect-ratio:3/4;object-fit:cover;
+}
+.sembunyi{display:none !important}
+
+.status{margin-top:10px;font-size:13.5px;padding:10px 12px;border-radius:9px;border-left:3px solid}
+.status.ok{background:#EAF5EF;border-color:var(--lunas);color:#12603A}
+.status.galat{background:#FBEDEA;border-color:var(--awas);color:#8C2718}
+.status.info{background:#EAF2F7;border-color:var(--biru);color:#0A567E}
+
+.struk{
+  background:var(--kartu);border:1px solid var(--garis);border-radius:14px;
+  padding:22px 18px;text-align:center;margin-top:14px;
+}
+.struk h2{
+  font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.01em;
+  text-transform:uppercase;color:var(--lunas);
+}
+.struk .kode{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--redup);margin-top:8px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
 </head>
 <body>
-  <div class="iframe-container">
-    <div class="loader" id="loader">Memuat aplikasi…</div>
+<div class="bingkai">
 
-    <!--
-      PERUBAHAN SATU-SATUNYA dari berkas lama:
-      atribut allow di bawah ini.
+  <header class="kop">
+    <img id="logo" src="https://kommodo.ai/i/yNzzGNEerRKxSTPUueag" alt="Logo MM Putra Motor">
+    <div class="merek"><span class="mm">MM Putra</span> <span class="mtr">Motor</span></div>
+    <div class="slogan">Absensi Karyawan</div>
+  </header>
 
-      Tanda bintang berarti izin diteruskan ke SEMUA asal yang dimuat di
-      dalam bingkai ini — perlu, karena script.google.com langsung
-      mengalihkan ke googleusercontent.com. Tanpa bintang, izin hilang
-      begitu terjadi pengalihan.
-
-      Catatan jujur: kalau Apps Script masih menaruh halaman Anda di
-      dalam iframe sandbox miliknya, izin ini tetap terhenti di lapisan
-      itu dan pesan galat yang sama akan muncul lagi. Bila begitu,
-      pakai index.html mandiri.
-    -->
-    <iframe
-      id="bingkai"
-      src="https://script.google.com/macros/s/AKfycbz04WDKww-7lE4cD2ELxQdzRAjcji1EipKCnI8VgQqXYurNNejp1b4_M_raIDqRrlk99Q/exec"
-      title="E-Absensi"
-      allow="geolocation *; camera *; microphone *; fullscreen *"
-      allowfullscreen>
-    </iframe>
-
-    <div class="nota" id="nota">
-      <b>Halaman ini bukan HTTPS.</b>
-      GPS dan kamera hanya jalan di alamat https:// atau localhost.
-    </div>
+  <div class="pita">
+    <div class="jam" id="jam">--.--.--</div>
+    <div class="tanggal" id="tanggal">memuat tanggal…</div>
   </div>
 
-<script>
-  document.getElementById('bingkai').addEventListener('load', function(){
-    document.getElementById('loader').style.display = 'none';
-  });
+  <!-- 01 IDENTITAS -->
+  <section class="kartu">
+    <div class="langkah"><span class="nomor">01</span><h1 class="judul">Identitas</h1></div>
+    <label class="ket" for="id-karyawan">ID karyawan</label>
+    <div class="baris">
+      <input type="text" id="id-karyawan" inputmode="text" autocomplete="off"
+             autocapitalize="characters" placeholder="mis. mpm130" style="flex:2">
+      <button type="button" class="garis" id="btn-cek" style="flex:1">Cek</button>
+    </div>
+    <div class="status info" id="status-id">Masukkan ID lalu tekan Cek.</div>
+    <div style="margin-top:12px">
+      <label class="ket" for="catatan">Catatan (boleh kosong)</label>
+      <input type="text" id="catatan" placeholder="mis. datang dari Padalarang">
+    </div>
+  </section>
 
-  // GPS & kamera diblokir peramban di halaman http biasa.
-  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    document.getElementById('nota').style.display = 'block';
+  <!-- 02 LOKASI -->
+  <section class="kartu">
+    <div class="langkah"><span class="nomor">02</span><h1 class="judul">Lokasi</h1></div>
+    <div class="data" id="data-lokasi">Membaca sinyal GPS…</div>
+    <div class="gembok">
+      <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+        <rect x=".7" y="5.2" width="9.6" height="7.1" rx="1.6" fill="#6B7C89"/>
+        <path d="M2.9 5.2V3.4a2.6 2.6 0 015.2 0v1.8" stroke="#6B7C89" stroke-width="1.3" fill="none"/>
+      </svg>
+      <span>Terkunci. Koordinat diambil langsung dari GPS perangkat, tidak ada kolom yang bisa diketik atau digeser.</span>
+    </div>
+    <div id="kotak-ulang" class="sembunyi" style="margin-top:10px">
+      <button type="button" class="garis" id="btn-ulang-lokasi">Coba baca ulang</button>
+    </div>
+  </section>
+
+  <!-- 03 FOTO -->
+  <section class="kartu">
+    <div class="langkah"><span class="nomor">03</span><h1 class="judul">Foto wajah</h1></div>
+    <video id="kamera" class="sembunyi" playsinline muted autoplay></video>
+    <img id="pratayang" class="sembunyi" alt="Hasil foto absensi">
+    <canvas id="kanvas" class="sembunyi"></canvas>
+    <div id="tombol-kamera" style="margin-top:10px">
+      <button type="button" class="garis" id="btn-buka-kamera">Buka kamera</button>
+    </div>
+    <div id="tombol-jepret" class="baris sembunyi" style="margin-top:10px">
+      <button type="button" class="utama" id="btn-jepret" style="flex:2">Ambil foto</button>
+      <button type="button" class="garis" id="btn-balik" style="flex:1">Balik</button>
+    </div>
+    <div id="tombol-ulang" class="sembunyi" style="margin-top:10px">
+      <button type="button" class="garis" id="btn-ulang">Foto ulang</button>
+    </div>
+    <div class="status info sembunyi" id="status-kamera"></div>
+  </section>
+
+  <!-- KIRIM -->
+  <section class="kartu">
+    <div class="tetap"><span class="titik"></span>Absen masuk</div>
+    <div style="margin-top:10px">
+      <button type="button" class="utama" id="btn-kirim" disabled>Kirim absensi</button>
+    </div>
+    <div class="status info" id="status-kirim">Lengkapi langkah 01 sampai 03 dulu.</div>
+  </section>
+
+  <div class="struk sembunyi" id="struk">
+    <h2>Absen masuk tercatat</h2>
+    <div class="kode" id="struk-isi"></div>
+    <button type="button" class="garis" id="btn-lagi" style="margin-top:16px">Absen lagi</button>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   PENGATURAN — ubah dua baris di bawah ini saja
+   ============================================================ */
+const KONFIG = {
+  URL   : 'https://script.google.com/macros/s/GANTI_DENGAN_ID_DEPLOY_ANDA/exec',
+  TOKEN : 'ganti-token-ini-2026',
+  LEBAR_FOTO : 640,
+  MUTU_FOTO  : 0.62,
+  UMUR_TITIK_MAKS : 60000   // bacaan GPS lebih tua dari 60 detik ditolak
+};
+
+const JENIS_ABSEN = 'MASUK';   // halaman ini khusus absen masuk
+
+/* ============================================================ */
+const S = { nama:'', id:'', lat:null, lng:null, akurasi:null, cap:0, foto:null, arus:null, depan:true };
+const $ = (x) => document.getElementById(x);
+const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+function dua(n){ return String(n).padStart(2,'0'); }
+function jalankanJam(){
+  const t = new Date();
+  $('jam').textContent = dua(t.getHours())+'.'+dua(t.getMinutes())+'.'+dua(t.getSeconds());
+  $('tanggal').textContent = HARI[t.getDay()]+', '+t.getDate()+' '+BULAN[t.getMonth()]+' '+t.getFullYear();
+}
+jalankanJam(); setInterval(jalankanJam,1000);
+
+// Kalau logo gagal dimuat, sisakan nama perusahaan saja.
+$('logo').addEventListener('error', function(){ this.style.display='none'; });
+
+function pesan(el,teks,jenis){
+  el.className = 'status '+(jenis||'info');
+  el.textContent = teks;
+  el.classList.remove('sembunyi');
+}
+
+/* ============================================================
+   Kirim ke Apps Script — text/plain agar tidak memicu preflight CORS
+   ============================================================ */
+async function keServer(muatan){
+  let jawab;
+  try{
+    jawab = await fetch(KONFIG.URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ token:KONFIG.TOKEN }, muatan)),
+      redirect:'follow'
+    });
+  }catch(e){
+    throw new Error('Tidak bisa menghubungi server. Periksa KONFIG.URL dan sambungan internet. ('+e.message+')');
   }
 
-  // Ketik ujiIzin() di Console untuk melihat apakah izin benar diteruskan.
-  window.ujiIzin = function(){
-    console.log('Protokol :', location.protocol);
-    console.log('Izin di halaman induk:',
-      document.featurePolicy ? document.featurePolicy.allowedFeatures() : 'tidak didukung peramban ini');
-    navigator.geolocation.getCurrentPosition(
-      function(p){ console.log('GPS induk OK:', p.coords.latitude, p.coords.longitude); },
-      function(e){ console.log('GPS induk GAGAL — kode', e.code, e.message); },
-      { enableHighAccuracy:true, timeout:12000 }
-    );
-  };
+  const teks = await jawab.text();
+  window._balasanMentah = { status: jawab.status, isi: teks };   // untuk ujiAbsensi()
+
+  try { return JSON.parse(teks); }
+  catch(e){
+    console.log('Balasan mentah dari server (status '+jawab.status+'):\n', teks);
+    let sebab;
+    if(/accounts\.google\.com|ServiceLogin|Sign in|Masuk ke akun/i.test(teks))
+      sebab = 'Server meminta login Google. Sebarkan ulang Web App dengan Who has access = Anyone.';
+    else if(/Script function not found|not found: doPost/i.test(teks))
+      sebab = 'Penyebaran ini belum memuat doPost. Buat Deploy > New deployment setelah blok tambahan ditempel.';
+    else if(/Authorization is required|memerlukan otorisasi/i.test(teks))
+      sebab = 'Skrip belum diberi izin. Jalankan ujiPintuAbsensi() dari editor Apps Script lalu setujui izinnya.';
+    else if(/<title>Error|Terjadi kesalahan|Sorry, unable/i.test(teks))
+      sebab = 'Server membalas halaman galat. Buka menu Executions di editor Apps Script untuk melihat pesan aslinya.';
+    else
+      sebab = 'Balasan server bukan JSON (status '+jawab.status+').';
+    throw new Error(sebab + ' Ketik ujiAbsensi() di Console untuk melihat balasan mentahnya.');
+  }
+}
+
+/* ============================================================
+   01 — Cek ID karyawan
+   ============================================================ */
+$('btn-cek').addEventListener('click', cekId);
+$('id-karyawan').addEventListener('keydown', e => { if(e.key==='Enter') cekId(); });
+
+async function cekId(){
+  const id = $('id-karyawan').value.trim();
+  if(!id){ pesan($('status-id'),'ID karyawan masih kosong.','galat'); return; }
+  $('btn-cek').disabled = true;
+  pesan($('status-id'),'Mencocokkan ID…','info');
+  try{
+    const h = await keServer({ aksi:'cek', id:id });
+    if(!h.ok) throw new Error(h.pesan || 'ID tidak ditemukan di Data_Karyawan.');
+    S.id = h.id; S.nama = h.nama;
+    localStorage.setItem('absensi_id', id);
+    pesan($('status-id'), h.nama + (h.jabatan ? ' — '+h.jabatan : '') + (h.pic ? ' ('+h.pic+')' : ''), 'ok');
+  }catch(err){
+    S.id=''; S.nama='';
+    pesan($('status-id'), err.message, 'galat');
+  }finally{
+    $('btn-cek').disabled = false;
+    nilaiKesiapan();
+  }
+}
+const idTersimpan = localStorage.getItem('absensi_id');
+if(idTersimpan) $('id-karyawan').value = idTersimpan;
+
+/* ============================================================
+   02 — Lokasi. Berjalan sendiri, tanpa kolom isian, tanpa tombol ambil.
+   ============================================================ */
+function bacaLokasi(){
+  return new Promise((selesai, tolak) => {
+    if(!navigator.geolocation){ tolak(new Error('Peramban ini tidak punya layanan lokasi.')); return; }
+
+    const terima = (pos) => {
+      S.lat = pos.coords.latitude;
+      S.lng = pos.coords.longitude;
+      S.akurasi = Math.round(pos.coords.accuracy);
+      S.cap = pos.timestamp || Date.now();
+      tampilLokasi();
+      selesai(true);
+    };
+    const sebab = {
+      1:'Izin lokasi ditolak. Buka ikon gembok di bilah alamat, pilih Lokasi, ganti ke Izinkan, lalu muat ulang halaman.',
+      2:'Titik lokasi tidak didapat. Nyalakan GPS di HP dan pilih mode akurasi tinggi.',
+      3:'Waktu habis. Berpindahlah ke tempat terbuka lalu coba baca ulang.'
+    };
+
+    // maximumAge:0 — selalu bacaan baru, bukan nilai simpanan peramban.
+    navigator.geolocation.getCurrentPosition(terima,
+      (e1) => navigator.geolocation.getCurrentPosition(terima,
+                (e2) => tolak(new Error(sebab[e2.code] || ('Gagal membaca lokasi: '+e2.message))),
+                { enableHighAccuracy:false, timeout:20000, maximumAge:0 }),
+      { enableHighAccuracy:true, timeout:12000, maximumAge:0 });
+  });
+}
+
+function tampilLokasi(){
+  $('data-lokasi').textContent =
+    'Lintang  : '+S.lat.toFixed(6)+'\n'+
+    'Bujur    : '+S.lng.toFixed(6)+'\n'+
+    'Ketepatan: \u00b1'+S.akurasi+' m'+(S.akurasi>60 ? '  (masih kasar)' : '')+'\n'+
+    'Terbaca  : '+new Date(S.cap).toLocaleTimeString('id-ID');
+  $('kotak-ulang').classList.add('sembunyi');
+}
+
+async function mulaiLokasi(){
+  $('data-lokasi').textContent = 'Membaca sinyal GPS…';
+  try{ await bacaLokasi(); }
+  catch(err){
+    $('data-lokasi').textContent = err.message;
+    $('kotak-ulang').classList.remove('sembunyi');
+  }
+  nilaiKesiapan();
+}
+$('btn-ulang-lokasi').addEventListener('click', mulaiLokasi);
+mulaiLokasi();
+
+/* ============================================================
+   03 — Kamera
+   ============================================================ */
+$('btn-buka-kamera').addEventListener('click', bukaKamera);
+$('btn-jepret').addEventListener('click', jepret);
+$('btn-balik').addEventListener('click', () => { S.depan = !S.depan; bukaKamera(); });
+$('btn-ulang').addEventListener('click', () => {
+  $('pratayang').classList.add('sembunyi');
+  $('tombol-ulang').classList.add('sembunyi');
+  S.foto = null; nilaiKesiapan(); bukaKamera();
+});
+
+async function bukaKamera(){
+  tutupKamera();
+  try{
+    S.arus = await navigator.mediaDevices.getUserMedia({
+      video:{ facingMode: S.depan ? 'user' : 'environment', width:{ideal:960}, height:{ideal:1280} },
+      audio:false
+    });
+    const v = $('kamera');
+    v.srcObject = S.arus;
+    await v.play();
+    v.classList.remove('sembunyi');
+    $('pratayang').classList.add('sembunyi');
+    $('tombol-kamera').classList.add('sembunyi');
+    $('tombol-jepret').classList.remove('sembunyi');
+    $('status-kamera').classList.add('sembunyi');
+  }catch(err){
+    let t = 'Kamera tidak bisa dibuka: '+err.name;
+    if(err.name==='NotAllowedError')  t = 'Izin kamera ditolak. Buka ikon gembok di bilah alamat, pilih Kamera, ganti ke Izinkan, lalu muat ulang halaman.';
+    if(err.name==='NotFoundError')    t = 'Kamera tidak terdeteksi di perangkat ini.';
+    if(err.name==='NotReadableError') t = 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi itu lalu coba lagi.';
+    pesan($('status-kamera'), t, 'galat');
+  }
+}
+
+function tutupKamera(){
+  if(S.arus){ S.arus.getTracks().forEach(t=>t.stop()); S.arus = null; }
+  $('kamera').classList.add('sembunyi');
+  $('tombol-jepret').classList.add('sembunyi');
+}
+
+function jepret(){
+  const v = $('kamera'), k = $('kanvas');
+  if(!v.videoWidth){ pesan($('status-kamera'),'Kamera belum siap, tunggu sebentar.','galat'); return; }
+  const skala = KONFIG.LEBAR_FOTO / v.videoWidth;
+  k.width = KONFIG.LEBAR_FOTO;
+  k.height = Math.round(v.videoHeight * skala);
+  const c = k.getContext('2d');
+  if(S.depan){ c.translate(k.width,0); c.scale(-1,1); }
+  c.drawImage(v, 0, 0, k.width, k.height);
+  const url = k.toDataURL('image/jpeg', KONFIG.MUTU_FOTO);
+  S.foto = url.split(',')[1];
+  $('pratayang').src = url;
+  $('pratayang').classList.remove('sembunyi');
+  $('tombol-ulang').classList.remove('sembunyi');
+  tutupKamera();
+  nilaiKesiapan();
+}
+window.addEventListener('pagehide', tutupKamera);
+
+/* ============================================================
+   Kirim
+   ============================================================ */
+function nilaiKesiapan(){
+  const siap = S.id && S.lat !== null && S.foto;
+  $('btn-kirim').disabled = !siap;
+  if(siap){ pesan($('status-kirim'),'Semua lengkap. Tekan Kirim absensi.','ok'); return; }
+  const kurang = [];
+  if(!S.id) kurang.push('ID karyawan');
+  if(S.lat === null) kurang.push('titik GPS');
+  if(!S.foto) kurang.push('foto');
+  pesan($('status-kirim'),'Belum ada: '+kurang.join(', ')+'.','info');
+}
+
+$('btn-kirim').addEventListener('click', async () => {
+  $('btn-kirim').disabled = true;
+  try{
+    // Titik dibaca ulang tepat sebelum kirim, supaya yang tercatat bukan nilai lama.
+    pesan($('status-kirim'),'Memastikan lokasi terkini…','info');
+    try{ await bacaLokasi(); }catch(e){ /* pakai bacaan sebelumnya */ }
+
+    if(Date.now() - S.cap > KONFIG.UMUR_TITIK_MAKS){
+      throw new Error('Bacaan GPS sudah kedaluwarsa. Tekan Coba baca ulang di bagian Lokasi.');
+    }
+
+    pesan($('status-kirim'),'Mengirim… jangan tutup halaman.','info');
+    const h = await keServer({
+      aksi:'absen',
+      id:S.id,
+      jenis:JENIS_ABSEN,
+      catatan:$('catatan').value.trim(),
+      lat:S.lat, lng:S.lng, akurasi:S.akurasi,
+      foto:S.foto,
+      perangkat:navigator.userAgent
+    });
+    if(!h.ok) throw new Error(h.pesan || 'Absensi ditolak server.');
+
+    $('struk-isi').textContent =
+      h.nama+'\n'+h.waktu+'\n'+
+      (h.pos ? h.pos+'  \u2022  '+h.jarak+' m dari titik\n' : '')+
+      'Ketepatan \u00b1'+S.akurasi+' m';
+    $('struk').classList.remove('sembunyi');
+    $('struk').scrollIntoView({behavior:'smooth', block:'center'});
+    pesan($('status-kirim'),'Terkirim.','ok');
+  }catch(err){
+    pesan($('status-kirim'), err.message, 'galat');
+    $('btn-kirim').disabled = false;
+  }
+});
+
+$('btn-lagi').addEventListener('click', () => {
+  S.foto = null;
+  $('pratayang').classList.add('sembunyi');
+  $('tombol-ulang').classList.add('sembunyi');
+  $('tombol-kamera').classList.remove('sembunyi');
+  $('catatan').value = '';
+  $('struk').classList.add('sembunyi');
+  mulaiLokasi();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+/* Diagnosa — ketik ujiAbsensi() di Console peramban */
+window.ujiAbsensi = async function(){
+  console.log('URL   :', KONFIG.URL);
+  console.log('HTTPS :', location.protocol === 'https:');
+  console.log('GPS   :', !!navigator.geolocation);
+  console.log('Kamera:', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
+  try{ console.log('Server:', await keServer({aksi:'ping'})); }
+  catch(e){
+    console.log('Server: GAGAL —', e.message);
+    if(window._balasanMentah){
+      console.log('Status HTTP :', window._balasanMentah.status);
+      console.log('Balasan mentah (400 huruf pertama):\n', window._balasanMentah.isi.substring(0,400));
+    }
+  }
+};
+
+nilaiKesiapan();
 </script>
 </body>
 </html>
