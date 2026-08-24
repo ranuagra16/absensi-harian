@@ -72,6 +72,21 @@ body{
 }
 .tanggal{font-size:13px;color:rgba(255,255,255,.85);margin-top:5px}
 
+/* REVISI 24-08-2026 — penanda batas jam masuk 08.10 */
+.batas{
+  margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.28);
+  display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;
+  font-size:13px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.9);
+}
+.lencana{
+  background:#fff;border-radius:999px;padding:3px 11px;
+  font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--redup);
+}
+.lencana.tepat{color:var(--lunas)}
+.lencana.telat{background:var(--merah);color:#fff}
+
 /* ---------- kartu langkah ---------- */
 .kartu{
   background:var(--kartu);border:1px solid var(--garis);border-top:none;
@@ -112,6 +127,22 @@ button.utama{background:var(--biru-tua);border-color:var(--biru-tua)}
 button:disabled{opacity:.4;cursor:not-allowed}
 button:focus-visible{outline:3px solid var(--biru);outline-offset:2px}
 
+/* REVISI 24-08-2026 — pemilih jenis kehadiran */
+.pilih{display:flex;gap:8px}
+.pilihan{
+  flex:1;background:transparent;color:var(--biru-tua);border-color:var(--garis);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.pilihan.aktif{background:var(--biru);border-color:var(--biru);color:#fff}
+.pilihan.aktif.sakit{background:var(--merah);border-color:var(--merah)}
+.titik{width:9px;height:9px;border-radius:50%;background:#5FD08C}
+.pilihan .titik{background:currentColor;opacity:.45}
+.pilihan.aktif .titik{background:#5FD08C;opacity:1}
+.pilihan.aktif.sakit .titik{background:#FFD9DC;opacity:1}
+.terpilih{
+  font-size:12px;color:var(--redup);margin-top:9px;line-height:1.45;
+}
+
 /* penanda jenis absen tetap */
 .tetap{
   display:flex;align-items:center;justify-content:center;gap:9px;
@@ -119,7 +150,7 @@ button:focus-visible{outline:3px solid var(--biru);outline-offset:2px}
   font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:17px;
   letter-spacing:.1em;text-transform:uppercase;
 }
-.titik{width:9px;height:9px;border-radius:50%;background:#5FD08C}
+.tetap.sakit{background:var(--merah)}
 
 /* data terkunci */
 .data{
@@ -140,6 +171,30 @@ video,#pratayang{
 }
 .sembunyi{display:none !important}
 
+/* REVISI 24-08-2026 — kotak surat keterangan sakit */
+.berkas{
+  width:100%;font-family:inherit;font-size:13.5px;color:var(--tinta);
+  padding:11px 12px;border:1px dashed var(--merah);border-radius:9px;
+  background:#FDF3F3;
+}
+.berkas::file-selector-button{
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;
+  text-transform:uppercase;letter-spacing:.06em;
+  border:1px solid var(--merah);background:var(--merah);color:#fff;
+  border-radius:7px;padding:7px 12px;margin-right:11px;cursor:pointer;
+}
+.surat-siap{
+  display:flex;align-items:center;gap:10px;margin-top:10px;
+  background:#EAF5EF;border:1px solid #B9DCC8;border-radius:9px;padding:10px 12px;
+}
+.surat-siap .nama{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;color:#12603A;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+}
+.surat-siap button{width:auto;min-height:34px;font-size:13px;padding:0 11px;
+  background:transparent;border-color:#B9DCC8;color:#12603A}
+#surat-pratayang{width:100%;margin-top:10px;border-radius:9px;border:1px solid var(--garis);display:block}
+
 .status{margin-top:10px;font-size:13.5px;padding:10px 12px;border-radius:9px;border-left:3px solid}
 .status.ok{background:#EAF5EF;border-color:var(--lunas);color:#12603A}
 .status.galat{background:#FBEDEA;border-color:var(--awas);color:#8C2718}
@@ -153,6 +208,7 @@ video,#pratayang{
   font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.01em;
   text-transform:uppercase;color:var(--lunas);
 }
+.struk h2.telat{color:var(--awas)}
 .struk .kode{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--redup);margin-top:8px}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
@@ -170,11 +226,32 @@ video,#pratayang{
   <div class="pita">
     <div class="jam" id="jam">--.--.--</div>
     <div class="tanggal" id="tanggal">memuat tanggal…</div>
+    <!-- REVISI 24-08-2026 -->
+    <div class="batas">
+      <span>Batas masuk <span id="teks-batas">08.10</span></span>
+      <span class="lencana" id="lencana">menunggu</span>
+    </div>
   </div>
 
-  <!-- 01 IDENTITAS -->
+  <!-- 01 JENIS KEHADIRAN — REVISI 24-08-2026 -->
   <section class="kartu">
-    <div class="langkah"><span class="nomor">01</span><h1 class="judul">Identitas</h1></div>
+    <div class="langkah"><span class="nomor">01</span><h1 class="judul">Jenis kehadiran</h1></div>
+    <div class="pilih" role="group" aria-label="Jenis kehadiran">
+      <button type="button" class="pilihan aktif" id="btn-jenis-masuk" aria-pressed="true">
+        <span class="titik"></span>Absen masuk
+      </button>
+      <button type="button" class="pilihan sakit" id="btn-jenis-sakit" aria-pressed="false">
+        <span class="titik"></span>Sakit
+      </button>
+    </div>
+    <p class="terpilih" id="keterangan-jenis">
+      Absen masuk tepat waktu sampai pukul 08.10. Lewat dari itu tercatat terlambat.
+    </p>
+  </section>
+
+  <!-- 02 IDENTITAS -->
+  <section class="kartu">
+    <div class="langkah"><span class="nomor">02</span><h1 class="judul">Identitas</h1></div>
     <label class="ket" for="id-karyawan">ID karyawan</label>
     <div class="baris">
       <input type="text" id="id-karyawan" inputmode="text" autocomplete="off"
@@ -188,9 +265,9 @@ video,#pratayang{
     </div>
   </section>
 
-  <!-- 02 LOKASI -->
-  <section class="kartu">
-    <div class="langkah"><span class="nomor">02</span><h1 class="judul">Lokasi</h1></div>
+  <!-- 03 LOKASI -->
+  <section class="kartu" id="kartu-lokasi">
+    <div class="langkah"><span class="nomor">03</span><h1 class="judul">Lokasi</h1></div>
     <div class="data" id="data-lokasi">Membaca sinyal GPS…</div>
     <div class="gembok">
       <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
@@ -204,9 +281,9 @@ video,#pratayang{
     </div>
   </section>
 
-  <!-- 03 FOTO -->
-  <section class="kartu">
-    <div class="langkah"><span class="nomor">03</span><h1 class="judul">Foto wajah</h1></div>
+  <!-- 04 FOTO -->
+  <section class="kartu" id="kartu-foto">
+    <div class="langkah"><span class="nomor">04</span><h1 class="judul">Foto wajah</h1></div>
     <video id="kamera" class="sembunyi" playsinline muted autoplay></video>
     <img id="pratayang" class="sembunyi" alt="Hasil foto absensi">
     <canvas id="kanvas" class="sembunyi"></canvas>
@@ -223,17 +300,37 @@ video,#pratayang{
     <div class="status info sembunyi" id="status-kamera"></div>
   </section>
 
+  <!-- 03 SURAT SAKIT — hanya tampil bila jenis Sakit dipilih. REVISI 24-08-2026 -->
+  <section class="kartu sembunyi" id="kartu-surat">
+    <div class="langkah"><span class="nomor">03</span><h1 class="judul">Surat sakit</h1></div>
+    <label class="ket" for="berkas-surat">Foto surat dokter atau berkas PDF. Wajib.</label>
+    <input type="file" id="berkas-surat" class="berkas" accept="image/*,application/pdf">
+    <div class="surat-siap sembunyi" id="surat-siap">
+      <span class="nama" id="surat-nama"></span>
+      <button type="button" class="garis" id="btn-hapus-surat">Hapus</button>
+    </div>
+    <img id="surat-pratayang" class="sembunyi" alt="Pratinjau surat sakit">
+    <div class="gembok">
+      <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+        <rect x=".7" y="5.2" width="9.6" height="7.1" rx="1.6" fill="#6B7C89"/>
+        <path d="M2.9 5.2V3.4a2.6 2.6 0 015.2 0v1.8" stroke="#6B7C89" stroke-width="1.3" fill="none"/>
+      </svg>
+      <span>Tanpa surat, absensi sakit tidak akan tersimpan. Foto surat dikecilkan otomatis; berkas PDF maksimal 4 MB.</span>
+    </div>
+    <div class="status info sembunyi" id="status-surat"></div>
+  </section>
+
   <!-- KIRIM -->
   <section class="kartu">
-    <div class="tetap"><span class="titik"></span>Absen masuk</div>
+    <div class="tetap" id="penanda-jenis"><span class="titik"></span>Absen masuk</div>
     <div style="margin-top:10px">
       <button type="button" class="utama" id="btn-kirim" disabled>Kirim absensi</button>
     </div>
-    <div class="status info" id="status-kirim">Lengkapi langkah 01 sampai 03 dulu.</div>
+    <div class="status info" id="status-kirim">Lengkapi langkah 01 sampai 04 dulu.</div>
   </section>
 
   <div class="struk sembunyi" id="struk">
-    <h2>Absen masuk tercatat</h2>
+    <h2 id="struk-judul">Absen masuk tercatat</h2>
     <div class="kode" id="struk-isi"></div>
     <button type="button" class="garis" id="btn-lagi" style="margin-top:16px">Absen lagi</button>
   </div>
@@ -249,22 +346,70 @@ const KONFIG = {
   TOKEN : 'mmputramotor2026',
   LEBAR_FOTO : 640,
   MUTU_FOTO  : 0.62,
-  UMUR_TITIK_MAKS : 60000   // bacaan GPS lebih tua dari 60 detik ditolak
+  UMUR_TITIK_MAKS : 60000,   // bacaan GPS lebih tua dari 60 detik ditolak
+  /* REVISI 24-08-2026 */
+  LEBAR_SURAT : 1400,        // sisi terpanjang foto surat sakit
+  MUTU_SURAT  : 0.75,
+  PDF_MAKS    : 4 * 1024 * 1024
 };
 
-const JENIS_ABSEN = 'MASUK';   // halaman ini khusus absen masuk
-
 /* ============================================================ */
-const S = { nama:'', id:'', lat:null, lng:null, akurasi:null, cap:0, foto:null, arus:null, depan:true };
+const S = { nama:'', id:'', lat:null, lng:null, akurasi:null, cap:0, foto:null, arus:null, depan:true,
+            jenis:'MASUK', surat:null, namaSurat:'' };
 const $ = (x) => document.getElementById(x);
 const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 function dua(n){ return String(n).padStart(2,'0'); }
+
+/* ============================================================
+   JAM DAN BATAS MASUK 08.10 — REVISI 24-08-2026
+   Selama ID belum dicek, jam yang tampil berasal dari perangkat.
+   Sesudah Cek berhasil, jam disamakan dengan jam server Google (WIB),
+   sehingga penilaian tepat waktu / terlambat tidak bisa diakali dengan
+   mengubah jam HP. Penilaian yang masuk ke sheet tetap dihitung server.
+   ============================================================ */
+let BATAS_DETIK = 8*3600 + 10*60;   /* 08.10.00 */
+const TOLERANSI = 60;               /* 08.10.59 masih tepat waktu */
+let detikServer = null, acuanKlien = 0;
+
+function detikKini(){
+  if(detikServer === null){
+    const t = new Date();
+    return t.getHours()*3600 + t.getMinutes()*60 + t.getSeconds();
+  }
+  return (detikServer + Math.floor((Date.now() - acuanKlien)/1000)) % 86400;
+}
+
+function samakanJam(h){
+  if(h && typeof h.detikHariIni === 'number'){ detikServer = h.detikHariIni; acuanKlien = Date.now(); }
+  if(h && typeof h.batasDetik === 'number') BATAS_DETIK = h.batasDetik;
+  if(h && h.batasTeks) $('teks-batas').textContent = String(h.batasTeks).replace(':','.');
+  jalankanJam();
+}
+
+function terlambatSekarang(){ return detikKini() >= (BATAS_DETIK + TOLERANSI); }
+function menitTerlambat(){ return Math.max(0, Math.floor((detikKini() - BATAS_DETIK)/60)); }
+
 function jalankanJam(){
+  const d = detikKini();
+  $('jam').textContent = dua(Math.floor(d/3600))+'.'+dua(Math.floor(d%3600/60))+'.'+dua(d%60);
   const t = new Date();
-  $('jam').textContent = dua(t.getHours())+'.'+dua(t.getMinutes())+'.'+dua(t.getSeconds());
   $('tanggal').textContent = HARI[t.getDay()]+', '+t.getDate()+' '+BULAN[t.getMonth()]+' '+t.getFullYear();
+
+  const l = $('lencana');
+  if(S.jenis !== 'MASUK'){
+    l.className = 'lencana';
+    l.textContent = 'tidak dipakai';
+    return;
+  }
+  if(terlambatSekarang()){
+    l.className = 'lencana telat';
+    l.textContent = 'terlambat '+menitTerlambat()+' menit';
+  }else{
+    l.className = 'lencana tepat';
+    l.textContent = 'tepat waktu';
+  }
 }
 jalankanJam(); setInterval(jalankanJam,1000);
 
@@ -319,7 +464,47 @@ async function keServer(muatan){
 }
 
 /* ============================================================
-   01 — Cek ID karyawan
+   01 — Jenis kehadiran. REVISI 24-08-2026
+   MASUK : perlu GPS + foto wajah, dinilai terhadap batas 08.10
+   SAKIT : perlu surat keterangan sakit, GPS dan foto tidak diminta
+   ============================================================ */
+$('btn-jenis-masuk').addEventListener('click', () => pilihJenis('MASUK'));
+$('btn-jenis-sakit').addEventListener('click', () => pilihJenis('SAKIT'));
+
+function pilihJenis(jenis){
+  S.jenis = jenis;
+  const masuk = (jenis === 'MASUK');
+
+  $('btn-jenis-masuk').classList.toggle('aktif', masuk);
+  $('btn-jenis-masuk').setAttribute('aria-pressed', String(masuk));
+  $('btn-jenis-sakit').classList.toggle('aktif', !masuk);
+  $('btn-jenis-sakit').setAttribute('aria-pressed', String(!masuk));
+
+  $('kartu-lokasi').classList.toggle('sembunyi', !masuk);
+  $('kartu-foto').classList.toggle('sembunyi', !masuk);
+  $('kartu-surat').classList.toggle('sembunyi', masuk);
+
+  $('penanda-jenis').classList.toggle('sakit', !masuk);
+  $('penanda-jenis').innerHTML = '<span class="titik"></span>' + (masuk ? 'Absen masuk' : 'Sakit');
+
+  $('keterangan-jenis').textContent = masuk
+    ? 'Absen masuk tepat waktu sampai pukul 08.10. Lewat dari itu tercatat terlambat.'
+    : 'Sakit wajib melampirkan surat keterangan sakit. Lokasi dan foto wajah tidak diminta.';
+
+  $('catatan').placeholder = masuk ? 'mis. datang dari Padalarang' : 'mis. demam, istirahat 2 hari';
+
+  if(masuk){
+    tutupKamera();
+    if(S.lat === null) mulaiLokasi();
+  }else{
+    tutupKamera();
+  }
+  jalankanJam();
+  nilaiKesiapan();
+}
+
+/* ============================================================
+   02 — Cek ID karyawan
    ============================================================ */
 $('btn-cek').addEventListener('click', cekId);
 $('id-karyawan').addEventListener('keydown', e => { if(e.key==='Enter') cekId(); });
@@ -334,6 +519,7 @@ async function cekId(){
     if(!h.ok) throw new Error(h.pesan || 'ID tidak ditemukan di Data_Karyawan.');
     S.id = h.id; S.nama = h.nama;
     localStorage.setItem('absensi_id', id);
+    samakanJam(h);   /* REVISI 24-08-2026 */
     pesan($('status-id'), h.nama + (h.jabatan ? ' — '+h.jabatan : '') + (h.pic ? ' ('+h.pic+')' : ''), 'ok');
   }catch(err){
     S.id=''; S.nama='';
@@ -347,7 +533,7 @@ const idTersimpan = localStorage.getItem('absensi_id');
 if(idTersimpan) $('id-karyawan').value = idTersimpan;
 
 /* ============================================================
-   02 — Lokasi. Berjalan sendiri, tanpa kolom isian, tanpa tombol ambil.
+   03 — Lokasi. Berjalan sendiri, tanpa kolom isian, tanpa tombol ambil.
    ============================================================ */
 function bacaLokasi(){
   return new Promise((selesai, tolak) => {
@@ -398,7 +584,7 @@ $('btn-ulang-lokasi').addEventListener('click', mulaiLokasi);
 mulaiLokasi();
 
 /* ============================================================
-   03 — Kamera
+   04 — Kamera
    ============================================================ */
 $('btn-buka-kamera').addEventListener('click', bukaKamera);
 $('btn-jepret').addEventListener('click', jepret);
@@ -459,46 +645,140 @@ function jepret(){
 window.addEventListener('pagehide', tutupKamera);
 
 /* ============================================================
+   03 (Sakit) — Surat keterangan sakit. REVISI 24-08-2026
+   Foto surat dikecilkan di HP supaya pengiriman ringan.
+   PDF dikirim apa adanya, dibatasi 4 MB.
+   ============================================================ */
+$('berkas-surat').addEventListener('change', function(){ pakaiSurat(this); });
+$('btn-hapus-surat').addEventListener('click', hapusSurat);
+
+function pakaiSurat(input){
+  if(!input || !input.files || !input.files.length) return;
+  const berkas = input.files[0];
+  const pdf = (berkas.type === 'application/pdf') || /\.pdf$/i.test(berkas.name);
+
+  if(pdf && berkas.size > KONFIG.PDF_MAKS){
+    pesan($('status-surat'), 'Berkas PDF '+(berkas.size/1048576).toFixed(1)+' MB, melebihi batas 4 MB. Kecilkan berkasnya atau foto saja suratnya.','galat');
+    input.value = '';
+    return;
+  }
+
+  const pembaca = new FileReader();
+  pembaca.onload = (e) => {
+    if(pdf){
+      S.surat = e.target.result;
+      S.namaSurat = berkas.name;
+      tampilSurat(null);
+      return;
+    }
+    const gbr = new Image();
+    gbr.onload = () => {
+      let l = gbr.width, t = gbr.height;
+      if(l > t && l > KONFIG.LEBAR_SURAT){ t = Math.round(t * KONFIG.LEBAR_SURAT / l); l = KONFIG.LEBAR_SURAT; }
+      else if(t > KONFIG.LEBAR_SURAT){ l = Math.round(l * KONFIG.LEBAR_SURAT / t); t = KONFIG.LEBAR_SURAT; }
+      const k = document.createElement('canvas');
+      k.width = l; k.height = t;
+      k.getContext('2d').drawImage(gbr, 0, 0, l, t);
+      S.surat = k.toDataURL('image/jpeg', KONFIG.MUTU_SURAT);
+      S.namaSurat = berkas.name;
+      tampilSurat(S.surat);
+    };
+    gbr.onerror = () => {
+      pesan($('status-surat'),'Berkas surat tidak terbaca. Pakai foto JPG/PNG atau berkas PDF.','galat');
+      input.value = '';
+    };
+    gbr.src = e.target.result;
+  };
+  pembaca.readAsDataURL(berkas);
+}
+
+function tampilSurat(gambar){
+  $('surat-nama').textContent = S.namaSurat || 'surat-sakit';
+  $('surat-siap').classList.remove('sembunyi');
+  const p = $('surat-pratayang');
+  if(gambar){ p.src = gambar; p.classList.remove('sembunyi'); }
+  else { p.removeAttribute('src'); p.classList.add('sembunyi'); }
+  pesan($('status-surat'),'Surat siap dikirim.','ok');
+  nilaiKesiapan();
+}
+
+function hapusSurat(){
+  S.surat = null; S.namaSurat = '';
+  $('berkas-surat').value = '';
+  $('surat-siap').classList.add('sembunyi');
+  $('surat-pratayang').classList.add('sembunyi');
+  $('status-surat').classList.add('sembunyi');
+  nilaiKesiapan();
+}
+
+/* ============================================================
    Kirim
    ============================================================ */
 function nilaiKesiapan(){
-  const siap = S.id && S.lat !== null && S.foto;
+  const masuk = (S.jenis === 'MASUK');
+  const siap = masuk ? (S.id && S.lat !== null && S.foto) : (S.id && S.surat);
   $('btn-kirim').disabled = !siap;
-  if(siap){ pesan($('status-kirim'),'Semua lengkap. Tekan Kirim absensi.','ok'); return; }
+
+  if(siap){
+    pesan($('status-kirim'), masuk ? 'Semua lengkap. Tekan Kirim absensi.'
+                                   : 'Surat sudah terlampir. Tekan Kirim absensi.', 'ok');
+    return;
+  }
   const kurang = [];
   if(!S.id) kurang.push('ID karyawan');
-  if(S.lat === null) kurang.push('titik GPS');
-  if(!S.foto) kurang.push('foto');
+  if(masuk){
+    if(S.lat === null) kurang.push('titik GPS');
+    if(!S.foto) kurang.push('foto');
+  }else{
+    if(!S.surat) kurang.push('surat keterangan sakit');
+  }
   pesan($('status-kirim'),'Belum ada: '+kurang.join(', ')+'.','info');
 }
 
 $('btn-kirim').addEventListener('click', async () => {
   $('btn-kirim').disabled = true;
+  const masuk = (S.jenis === 'MASUK');
   try{
-    // Titik dibaca ulang tepat sebelum kirim, supaya yang tercatat bukan nilai lama.
-    pesan($('status-kirim'),'Memastikan lokasi terkini…','info');
-    try{ await bacaLokasi(); }catch(e){ /* pakai bacaan sebelumnya */ }
+    const muatan = {
+      aksi:'absen',
+      id:S.id,
+      jenis:S.jenis,
+      catatan:$('catatan').value.trim(),
+      perangkat:navigator.userAgent
+    };
 
-    if(Date.now() - S.cap > KONFIG.UMUR_TITIK_MAKS){
-      throw new Error('Bacaan GPS sudah kedaluwarsa. Tekan Coba baca ulang di bagian Lokasi.');
+    if(masuk){
+      // Titik dibaca ulang tepat sebelum kirim, supaya yang tercatat bukan nilai lama.
+      pesan($('status-kirim'),'Memastikan lokasi terkini…','info');
+      try{ await bacaLokasi(); }catch(e){ /* pakai bacaan sebelumnya */ }
+
+      if(Date.now() - S.cap > KONFIG.UMUR_TITIK_MAKS){
+        throw new Error('Bacaan GPS sudah kedaluwarsa. Tekan Coba baca ulang di bagian Lokasi.');
+      }
+      muatan.lat = S.lat; muatan.lng = S.lng; muatan.akurasi = S.akurasi;
+      muatan.foto = S.foto;
+    }else{
+      if(!S.surat) throw new Error('Surat keterangan sakit belum dilampirkan.');
+      muatan.surat = S.surat;     /* REVISI 24-08-2026 */
     }
 
     pesan($('status-kirim'),'Mengirim… jangan tutup halaman.','info');
-    const h = await keServer({
-      aksi:'absen',
-      id:S.id,
-      jenis:JENIS_ABSEN,
-      catatan:$('catatan').value.trim(),
-      lat:S.lat, lng:S.lng, akurasi:S.akurasi,
-      foto:S.foto,
-      perangkat:navigator.userAgent
-    });
-    if(!h.ok) throw new Error(h.pesan || 'Absensi ditolak server.');
+    const h = await keServer(muatan);
+    if(!h.ok) throw new Error(h.pesan || h.message || 'Absensi ditolak server.');
+
+    const telat = (h.kehadiran === 'TERLAMBAT');
+    $('struk-judul').textContent = masuk
+      ? (telat ? 'Tercatat terlambat' : 'Absen masuk tercatat')
+      : 'Sakit tercatat';
+    $('struk-judul').className = telat ? 'telat' : '';
 
     $('struk-isi').textContent =
       h.nama+'\n'+h.waktu+'\n'+
-      (h.pos ? h.pos+'  \u2022  '+h.jarak+' m dari titik\n' : '')+
-      'Ketepatan \u00b1'+S.akurasi+' m';
+      (h.kehadiran ? 'Kehadiran: '+h.kehadiran+(h.terlambat ? '  \u2022  '+h.terlambat+' menit' : '')+'\n' : '')+
+      (masuk
+        ? ((h.pos ? h.pos+'  \u2022  '+h.jarak+' m dari titik\n' : '')+'Ketepatan \u00b1'+S.akurasi+' m')
+        : 'Surat sakit terkirim: '+S.namaSurat);
+
     $('struk').classList.remove('sembunyi');
     $('struk').scrollIntoView({behavior:'smooth', block:'center'});
     pesan($('status-kirim'),'Terkirim.','ok');
@@ -515,7 +795,8 @@ $('btn-lagi').addEventListener('click', () => {
   $('tombol-kamera').classList.remove('sembunyi');
   $('catatan').value = '';
   $('struk').classList.add('sembunyi');
-  mulaiLokasi();
+  hapusSurat();
+  if(S.jenis === 'MASUK') mulaiLokasi(); else nilaiKesiapan();
   window.scrollTo({top:0,behavior:'smooth'});
 });
 
@@ -525,6 +806,7 @@ window.ujiAbsensi = async function(){
   console.log('HTTPS :', location.protocol === 'https:');
   console.log('GPS   :', !!navigator.geolocation);
   console.log('Kamera:', !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia));
+  console.log('Jenis :', S.jenis, '| batas detik:', BATAS_DETIK, '| jam dipakai:', detikServer===null ? 'perangkat' : 'server');
   try{ console.log('Server:', await keServer({aksi:'ping'})); }
   catch(e){
     console.log('Server: GAGAL —', e.message);
